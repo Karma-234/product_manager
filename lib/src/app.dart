@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:product_manager/src/view/products/index_product_view.dart';
+import 'package:product_manager/src/views/products/view/index_product_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
