@@ -4,15 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 
 import 'package:product_manager/src/widgets/app_button.dart';
 import 'package:product_manager/src/widgets/app_image_picker_bottosheet.dart';
 
 import '../../../widgets/app_text.dart';
 
-class AddProductView extends StatelessWidget {
+class AddProductView extends StatefulWidget {
   const AddProductView({super.key});
 
+  @override
+  State<AddProductView> createState() => _AddProductViewState();
+}
+
+class _AddProductViewState extends State<AddProductView> {
+  Uint8List? bytes;
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -82,14 +89,24 @@ class AddProductView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SizedBox.shrink(),
-                  //  Obx(() => Image.memory(bytes)),
+                  // const SizedBox.shrink(),
+                  bytes == null
+                      ? const SizedBox.shrink()
+                      : Image.memory(
+                          bytes!,
+                          height: 70,
+                          width: 70,
+                        ),
                   GestureDetector(
                     onTap: () async {
                       final result = await showImagePickerBottomsheet(context);
                       if (result == null) return;
                       final resultFile = File(result);
-                      final inMemomry = resultFile.readAsBytes();
+                      final inMemomry = await resultFile.readAsBytes();
+                      setState(() {
+                        bytes = inMemomry;
+                      });
+                      // debugPrint(resultFile);
                     },
                     child: const AppText(
                       text: 'Add Image',

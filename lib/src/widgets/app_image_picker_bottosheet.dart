@@ -57,7 +57,10 @@ class AppImagePickerBottomsheet extends StatelessWidget {
         imgType(
           onTap: () {
             try {
-              imgHandler.pickImage(ImageSource.camera).then((imageData) {});
+              imgHandler.pickImage(ImageSource.camera).then((imageData) {
+                if (imageData == null) return;
+                Get.back(result: imageData.path);
+              });
             } catch (e) {
               Get.showSnackbar(
                 const GetSnackBar(
@@ -73,10 +76,8 @@ class AppImagePickerBottomsheet extends StatelessWidget {
           onTap: () {
             try {
               imgHandler.pickImage(ImageSource.gallery).then((imageData) {
-                if (imageData != null) {
-                  Get.back(result: imageData.path);
-                }
-                Get.back(result: imageData?.path);
+                if (imageData == null) return;
+                Get.back(result: imageData.path);
               });
             } catch (e) {
               Get.showSnackbar(
