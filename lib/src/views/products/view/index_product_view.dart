@@ -22,6 +22,19 @@ class IndexProductView extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
       ),
+      floatingActionButton: GestureDetector(
+        child: Container(
+          height: 50.h,
+          width: 50.h,
+          decoration:
+              const BoxDecoration(shape: BoxShape.circle, color: Colors.black),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
       body: ListView.separated(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           itemBuilder: (context, index) => const ProductCard(),
