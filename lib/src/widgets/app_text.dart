@@ -8,6 +8,7 @@ class AppText extends StatelessWidget {
   final FontWeight fontWeight;
   final TextOverflow overflow;
   final TextStyle? style;
+  final TextAlign alignment;
   const AppText({
     super.key,
     this.text = 'This is product title',
@@ -16,6 +17,7 @@ class AppText extends StatelessWidget {
     this.fontWeight = FontWeight.w400,
     this.overflow = TextOverflow.ellipsis,
     this.style,
+    this.alignment = TextAlign.left,
   });
   factory AppText.markazi({
     String text = '',
@@ -23,9 +25,11 @@ class AppText extends StatelessWidget {
     Color color = Colors.black,
     FontWeight fontWeight = FontWeight.w400,
     TextOverflow overflow = TextOverflow.ellipsis,
+    TextAlign align = TextAlign.left,
   }) =>
       AppText(
         text: text,
+        alignment: align,
         style: GoogleFonts.markaziText(
             fontSize: fontSize,
             color: color,
@@ -37,6 +41,7 @@ class AppText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
+      textAlign: alignment,
       style: style ??
           GoogleFonts.karla(
             fontSize: fontSize,

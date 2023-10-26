@@ -6,8 +6,8 @@ import 'package:product_manager/src/widgets/app_button.dart';
 
 import '../../../widgets/app_text.dart';
 
-class AddProductView extends StatelessWidget {
-  const AddProductView({super.key});
+class UpdateProductView extends StatelessWidget {
+  const UpdateProductView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class AddProductView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   AppText.markazi(
-                    text: 'Add Product',
+                    text: 'Update Product',
                     fontSize: 28,
                   ),
                   const CloseButton()
