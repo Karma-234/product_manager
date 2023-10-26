@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:product_manager/src/views/products/view/update_product_view.dart';
 
 import '../../../widgets/app_text.dart';
+import 'dlete_product_prompt.dart';
 
 class ProductCard extends StatelessWidget {
   final String productTitle;
@@ -93,9 +95,44 @@ class ProductCard extends StatelessWidget {
                     PopupMenuButton(
                       position: PopupMenuPosition.under,
                       tooltip: 'More',
-                      itemBuilder: (context) => ['Delete', 'Update']
+                      onSelected: (value) {},
+                      itemBuilder: (context) => ['Update', 'Delete']
                           .map(
                             (e) => PopupMenuItem(
+                              value: e,
+                              onTap: () {
+                                switch (e) {
+                                  case 'Delete':
+                                    showModalBottomSheet(
+                                      backgroundColor: Colors.white,
+                                      isDismissible: false,
+                                      barrierColor:
+                                          Colors.grey.withOpacity(0.5),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15.r),
+                                          topRight: Radius.circular(
+                                            15.r,
+                                          ),
+                                        ),
+                                      ),
+                                      context: context,
+                                      builder: (context) {
+                                        return const DeleteProductPrompt();
+                                      },
+                                    );
+                                    return;
+                                  case 'Update':
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) =>
+                                          const UpdateProductView(),
+                                    );
+                                    return;
+                                  default:
+                                    debugPrint("Did nothing");
+                                }
+                              },
                               child: AppText(
                                 text: e,
                                 fontSize: 14,
