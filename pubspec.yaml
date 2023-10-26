@@ -12,14 +12,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
+  flutter_screenutil: ^5.9.0
+  get: ^4.6.6
+  google_fonts: ^6.1.0
+  loader_overlay: ^2.3.2
+  sqfentity: ^2.4.0
+  sqfentity_gen: ^2.4.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^2.0.0
+  build_runner: ^2.4.6
 
 flutter:
   uses-material-design: true
