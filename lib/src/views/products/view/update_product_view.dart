@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:product_manager/src/widgets/app_button.dart';
 
+import '../../../widgets/app_image_picker_bottosheet.dart';
 import '../../../widgets/app_text.dart';
 
 class UpdateProductView extends StatelessWidget {
@@ -15,7 +18,7 @@ class UpdateProductView extends StatelessWidget {
       color: Colors.black.withOpacity(0),
       child: Container(
         margin: EdgeInsets.symmetric(
-            vertical: MediaQuery.sizeOf(context).height * 0.15,
+            vertical: MediaQuery.sizeOf(context).height * 0.11,
             horizontal: MediaQuery.sizeOf(context).width * 0.1),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
@@ -73,6 +76,26 @@ class UpdateProductView extends StatelessWidget {
                   FilteringTextInputFormatter.deny(RegExp(r"^0"))
                 ],
                 keyboardType: TextInputType.number,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox.shrink(),
+                  //  Obx(() => Image.memory(bytes)),
+                  GestureDetector(
+                    onTap: () async {
+                      final result = await showImagePickerBottomsheet(context);
+                      if (result == null) return;
+                      final resultFile = File(result);
+                      final inMemomry = resultFile.readAsBytes();
+                    },
+                    child: const AppText(
+                      text: 'Update Image',
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
               Gap(16.h),
               const AppButton()
