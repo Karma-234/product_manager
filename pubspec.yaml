@@ -16,6 +16,7 @@ dependencies:
   gap: ^3.0.1
   get: ^4.6.6
   google_fonts: ^6.1.0
+  image_picker: ^1.0.4
   loader_overlay: ^2.3.2
   sqfentity: ^2.4.0
   sqfentity_gen: ^2.4.0
