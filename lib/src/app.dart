@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:product_manager/src/views/products/view/index_product_view.dart';
 
@@ -24,7 +25,18 @@ class MyApp extends StatelessWidget {
             overlayColor: Colors.black.withOpacity(0.3),
             child: GetMaterialApp(
               onGenerateTitle: (BuildContext context) => 'Product Manager',
-              theme: ThemeData(),
+              theme: ThemeData(
+                inputDecorationTheme: InputDecorationTheme(
+                  hintStyle: GoogleFonts.karla(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black, width: 2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
               darkTheme: ThemeData.dark(),
               debugShowCheckedModeBanner: false,
               onGenerateRoute: (RouteSettings routeSettings) {
