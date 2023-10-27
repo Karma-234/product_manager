@@ -10,3 +10,5 @@ clean:
 	flutter pub get
 	cd ios && pod install
 	flutter run
+runner: 
+		dart run build_runner build --delete-conflicting-outputs
