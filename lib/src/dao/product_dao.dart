@@ -6,7 +6,7 @@ import 'package:product_manager/src/entity/product.dart';
 @dao
 abstract class ProductDao {
   @Query('SELECT * FROM Person')
-  Future<List<Products>> findAllProducts();
+  Stream<List<Products>> findAllProducts();
 
   @Query('SELECT * FROM Products WHERE title = :title')
   Stream<Products?> findProductByTultle(String title);
@@ -16,4 +16,7 @@ abstract class ProductDao {
 
   @delete
   Future<void> deleteProduct(Products person);
+
+  @update
+  Future<void> updateProduct(Products person);
 }

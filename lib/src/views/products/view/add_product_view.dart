@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:get/get.dart';
 
 import 'package:product_manager/src/widgets/app_button.dart';
 import 'package:product_manager/src/widgets/app_image_picker_bottosheet.dart';

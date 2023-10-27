@@ -137,6 +137,21 @@ class _$ProductDao extends ProductDao {
                   'imageUrl': item.imageUrl
                 },
             changeListener),
+        _productsUpdateAdapter = UpdateAdapter(
+            database,
+            'Products',
+            ['id'],
+            (Products item) => <String, Object?>{
+                  'id': item.id,
+                  'title': item.title,
+                  'description': item.description,
+                  'costPrice': item.costPrice,
+                  'sellingPrice': item.sellingPrice,
+                  'createdAt': item.createdAt,
+                  'updatedAt': item.updatedAt,
+                  'imageUrl': item.imageUrl
+                },
+            changeListener),
         _productsDeletionAdapter = DeletionAdapter(
             database,
             'Products',
@@ -163,11 +178,13 @@ class _$ProductDao extends ProductDao {
 
   final InsertionAdapter<Products> _productsInsertionAdapter;
 
+  final UpdateAdapter<Products> _productsUpdateAdapter;
+
   final DeletionAdapter<Products> _productsDeletionAdapter;
 
   @override
-  Future<List<Products>> findAllProducts() async {
-    return _queryAdapter.queryList('SELECT * FROM Person',
+  Stream<List<Products>> findAllProducts() {
+    return _queryAdapter.queryListStream('SELECT * FROM Person',
         mapper: (Map<String, Object?> row) => Products(
             id: row['id'] as String,
             title: row['title'] as String,
@@ -176,7 +193,9 @@ class _$ProductDao extends ProductDao {
             sellingPrice: row['sellingPrice'] as double,
             createdAt: row['createdAt'] as String,
             updatedAt: row['updatedAt'] as String,
-            imageUrl: row['imageUrl'] as String));
+            imageUrl: row['imageUrl'] as String),
+        queryableName: 'Products',
+        isView: false);
   }
 
   @override
@@ -199,6 +218,11 @@ class _$ProductDao extends ProductDao {
   @override
   Future<void> insertProduct(Products person) async {
     await _productsInsertionAdapter.insert(person, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateProduct(Products person) async {
+    await _productsUpdateAdapter.update(person, OnConflictStrategy.abort);
   }
 
   @override

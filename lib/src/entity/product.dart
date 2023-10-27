@@ -1,5 +1,4 @@
 import 'package:flat_orm/flat_orm.dart';
-import 'package:uuid/uuid.dart';
 
 @entity
 class Products {

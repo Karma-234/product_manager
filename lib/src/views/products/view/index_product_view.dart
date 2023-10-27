@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:product_manager/src/view_model/product_controller.dart';
 import 'package:product_manager/src/views/products/view/add_product_view.dart';
 
 import 'package:product_manager/src/widgets/app_text.dart';
+import 'package:uuid/uuid.dart';
 
 import '../widgets/product_card.dart';
 
@@ -13,7 +13,9 @@ class IndexProductView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProductController.controller.setProducts([]);
+    // ProductController.controller;
+    const id = Uuid();
+    print(id.v4());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
