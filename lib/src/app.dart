@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:product_manager/src/view_model/product_controller.dart';
 import 'package:product_manager/src/views/products/view/index_product_view.dart';
 
 /// The Widget that configures your application.
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productController = Get.put(ProductController());
     return ScreenUtilInit(
         designSize: const Size(390, 844),
         minTextAdapt: true,
