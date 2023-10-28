@@ -4,8 +4,8 @@ import 'package:gap/gap.dart';
 import 'package:product_manager/src/views/products/view/add_product_view.dart';
 
 import 'package:product_manager/src/widgets/app_text.dart';
-import 'package:uuid/uuid.dart';
 
+import '../../../view_model/product_controller.dart';
 import '../widgets/product_card.dart';
 
 class IndexProductView extends StatelessWidget {
@@ -13,9 +13,9 @@ class IndexProductView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ProductController.controller;
-    const id = Uuid();
-    print(id.v4());
+    final ctrl = ProductController.controller;
+
+    // print(id.v4());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -44,11 +44,25 @@ class IndexProductView extends StatelessWidget {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
-      body: ListView.separated(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          itemBuilder: (context, index) => const ProductCard(),
-          separatorBuilder: (context, index) => Gap(16.h),
-          itemCount: 10),
+      body: StreamBuilder(
+          stream: ctrl.allProducts?.value,
+          builder: (context, snapshot) {
+            final products = snapshot.data ?? [];
+            if (products.isEmpty) {
+              return Center(
+                child: AppText.markazi(
+                  text: 'No products in inventory!',
+                ),
+              );
+            }
+            return ListView.separated(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                itemBuilder: (context, i) => ProductCard(
+                      products: products[i],
+                    ),
+                separatorBuilder: (context, index) => Gap(16.h),
+                itemCount: 10);
+          }),
     );
   }
 }

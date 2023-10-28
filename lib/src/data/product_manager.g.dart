@@ -85,7 +85,7 @@ class _$ProductManager extends ProductManager {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Products` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `costPrice` REAL NOT NULL, `sellingPrice` REAL NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Products` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `costPrice` REAL NOT NULL, `sellingPrice` REAL NOT NULL, `quantity` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -132,6 +132,7 @@ class _$ProductDao extends ProductDao {
                   'description': item.description,
                   'costPrice': item.costPrice,
                   'sellingPrice': item.sellingPrice,
+                  'quantity': item.quantity,
                   'createdAt': item.createdAt,
                   'updatedAt': item.updatedAt,
                   'imageUrl': item.imageUrl
@@ -147,6 +148,7 @@ class _$ProductDao extends ProductDao {
                   'description': item.description,
                   'costPrice': item.costPrice,
                   'sellingPrice': item.sellingPrice,
+                  'quantity': item.quantity,
                   'createdAt': item.createdAt,
                   'updatedAt': item.updatedAt,
                   'imageUrl': item.imageUrl
@@ -162,6 +164,7 @@ class _$ProductDao extends ProductDao {
                   'description': item.description,
                   'costPrice': item.costPrice,
                   'sellingPrice': item.sellingPrice,
+                  'quantity': item.quantity,
                   'createdAt': item.createdAt,
                   'updatedAt': item.updatedAt,
                   'imageUrl': item.imageUrl
@@ -184,7 +187,7 @@ class _$ProductDao extends ProductDao {
 
   @override
   Stream<List<Products>> findAllProducts() {
-    return _queryAdapter.queryListStream('SELECT * FROM Person',
+    return _queryAdapter.queryListStream('SELECT * FROM Products',
         mapper: (Map<String, Object?> row) => Products(
             id: row['id'] as String,
             title: row['title'] as String,
@@ -193,13 +196,14 @@ class _$ProductDao extends ProductDao {
             sellingPrice: row['sellingPrice'] as double,
             createdAt: row['createdAt'] as String,
             updatedAt: row['updatedAt'] as String,
-            imageUrl: row['imageUrl'] as String),
+            imageUrl: row['imageUrl'] as String,
+            quantity: row['quantity'] as int),
         queryableName: 'Products',
         isView: false);
   }
 
   @override
-  Stream<Products?> findProductByTultle(String title) {
+  Stream<Products?> findProductByTitle(String title) {
     return _queryAdapter.queryStream('SELECT * FROM Products WHERE title = ?1',
         mapper: (Map<String, Object?> row) => Products(
             id: row['id'] as String,
@@ -209,7 +213,8 @@ class _$ProductDao extends ProductDao {
             sellingPrice: row['sellingPrice'] as double,
             createdAt: row['createdAt'] as String,
             updatedAt: row['updatedAt'] as String,
-            imageUrl: row['imageUrl'] as String),
+            imageUrl: row['imageUrl'] as String,
+            quantity: row['quantity'] as int),
         arguments: [title],
         queryableName: 'Products',
         isView: false);

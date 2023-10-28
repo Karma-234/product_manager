@@ -9,17 +9,20 @@ class Products {
   final String description;
   final double costPrice;
   final double sellingPrice;
+  final int quantity;
   final String createdAt;
   final String updatedAt;
   final String imageUrl;
 
-  Products(
-      {required this.id,
-      required this.title,
-      required this.description,
-      required this.costPrice,
-      required this.sellingPrice,
-      required this.createdAt,
-      required this.updatedAt,
-      required this.imageUrl});
+  Products({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.costPrice,
+    required this.sellingPrice,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.imageUrl,
+    required this.quantity,
+  });
 }

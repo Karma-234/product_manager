@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:product_manager/src/entity/product.dart';
+import 'package:product_manager/src/view_model/product_controller.dart';
 import 'package:product_manager/src/views/products/view/update_product_view.dart';
 
 import '../../../widgets/app_text.dart';
 import 'dlete_product_prompt.dart';
 
 class ProductCard extends StatelessWidget {
-  final String productTitle;
-  final String productDescription;
-  final String costPrice;
-  final String sellingPrice;
+  final Products _products;
 
-  const ProductCard({
-    super.key,
-    this.productTitle = 'This is product title',
-    this.productDescription = 'This is product description',
-    this.costPrice = '\$1.99',
-    this.sellingPrice = '\$2.99',
-  });
+  const ProductCard({super.key, 
+    required Products products,
+  }) : _products = products;
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +52,11 @@ class ProductCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     AppText.markazi(
-                      text: productTitle,
+                      text: _products.title,
                       fontWeight: FontWeight.w600,
                     ),
                     AppText(
-                      text: productDescription,
+                      text: _products.description,
                       fontSize: 14,
                       color: Colors.black54,
                       fontWeight: FontWeight.w600,
@@ -78,12 +73,12 @@ class ProductCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CustomTextSpan(
-                          detailText: costPrice,
+                          detailText: _products.costPrice.toString(),
                         ),
                         Gap(3.h),
                         CustomTextSpan(
                           titleText: 'Selling price:',
-                          detailText: sellingPrice,
+                          detailText: _products.sellingPrice.toString(),
                         ),
                         Gap(3.h),
                         const CustomTextSpan(
@@ -118,15 +113,20 @@ class ProductCard extends StatelessWidget {
                                       ),
                                       context: context,
                                       builder: (context) {
-                                        return const DeleteProductPrompt();
+                                        return DeleteProductPrompt(
+                                          onDelete: () => ProductController
+                                              .controller
+                                              .deleteProduct(_products),
+                                        );
                                       },
                                     );
                                     return;
                                   case 'Update':
                                     showDialog(
                                       context: context,
-                                      builder: (context) =>
-                                          const UpdateProductView(),
+                                      builder: (context) => UpdateProductView(
+                                        products: _products,
+                                      ),
                                     );
                                     return;
                                   default:

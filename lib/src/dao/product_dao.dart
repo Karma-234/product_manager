@@ -5,11 +5,11 @@ import 'package:product_manager/src/entity/product.dart';
 
 @dao
 abstract class ProductDao {
-  @Query('SELECT * FROM Person')
+  @Query('SELECT * FROM Products')
   Stream<List<Products>> findAllProducts();
 
   @Query('SELECT * FROM Products WHERE title = :title')
-  Stream<Products?> findProductByTultle(String title);
+  Stream<Products?> findProductByTitle(String title);
 
   @insert
   Future<void> insertProduct(Products person);

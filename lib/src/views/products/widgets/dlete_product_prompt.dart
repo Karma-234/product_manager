@@ -7,8 +7,10 @@ import '../../../widgets/app_button.dart';
 import '../../../widgets/app_text.dart';
 
 class DeleteProductPrompt extends StatelessWidget {
+  final VoidCallback onDelete;
   const DeleteProductPrompt({
     super.key,
+    required this.onDelete,
   });
 
   @override
@@ -43,7 +45,9 @@ class DeleteProductPrompt extends StatelessWidget {
                   text: 'Yes, Proceed.',
                   buttonColor: Colors.red,
                   textColor: Colors.white,
-                  callback: () {},
+                  callback: () {
+                    onDelete();
+                  },
                 ),
               ),
               Gap(8.w),
