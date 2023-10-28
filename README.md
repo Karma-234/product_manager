@@ -1,30 +1,31 @@
 # product_manager
 
-A new Flutter project.
+Product Manager.
 
-## Getting Started
+## Brief Description
 
-This project is a starting point for a Flutter application that follows the
-[simple app state management
-tutorial](https://flutter.dev/docs/development/data-and-backend/state-mgmt/simple).
+This application allows users to add, delete and update products to a sqlflite datatbase. Users can add the product title, description, cost price, selling price, image and quantity of the product to the database.
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Architecture
 
-## Assets
+The Model - View - ViewModel (MVVM) was used for separation of concerns and adopt clean code practice.
 
-The `assets` directory houses images, fonts, and any other files you want to
-include with your application.
+## Dependency Injection
 
-The `assets/images` directory contains [resolution-aware
-images](https://flutter.dev/docs/development/ui/assets-and-images#resolution-aware).
+The Getx package was used for dependency injection to provide a structured approach for providing values to dependent components.
 
-## Localization
+## State management
 
-This project generates localized messages based on arb files found in
-the `lib/src/localization` directory.
+The Getx package was used for state management for its reactive state management approach that updates only the necessary parts of UI depending on the changing variables.
 
-To support additional languages, please visit the tutorial on
-[Internationalizing Flutter
-apps](https://flutter.dev/docs/development/accessibility-and-localization/internationalization)
+## Routing
+
+- GetX has an inbuilt routing system that allows easy routing while abstracting the context.
+
+## External Packages
+- The Image picker allows user to upload image of product from camera or gallery.
+- Flat_orm was used as object relational model to query the sqflite databse.
+
+
+
+
