@@ -146,11 +146,15 @@ class ProductCard extends StatelessWidget {
                                     );
                                     return;
                                   case 'Update':
+                                    ProductController.controller
+                                        .setProduct(_products);
                                     showDialog(
                                       context: context,
-                                      builder: (context) => UpdateProductView(
-                                        products: _products,
-                                      ),
+                                      builder: (context) {
+                                        return UpdateProductView(
+                                          products: _products,
+                                        );
+                                      },
                                     );
                                     return;
                                   default:

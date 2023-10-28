@@ -41,13 +41,24 @@ class ProductController extends GetxController {
     update();
   }
 
-  void setProduct(Products product) {
-    setCostPrice(product.costPrice.toInt().toString());
-    setSellingPrice(product.sellingPrice.toInt().toString());
-    setDescription(product.description);
-    setTitle(product.title);
-    setImageUrl(product.imageUrl);
-    setQuantity(product.quantity.toString());
+  void setProduct(Products product, {bool shouldUpdate = true}) {
+    setCostPrice(product.costPrice.toInt().toString(),
+        shouldUpdate: shouldUpdate);
+    setSellingPrice(product.sellingPrice.toInt().toString(),
+        shouldUpdate: shouldUpdate);
+    setDescription(product.description, shouldUpdate: shouldUpdate);
+    setTitle(product.title, shouldUpdate: shouldUpdate);
+    setImageUrl(product.imageUrl, shouldUpdate: shouldUpdate);
+    setQuantity(product.quantity.toString(), shouldUpdate: shouldUpdate);
+  }
+
+  void resetFields({bool shouldUpdate = true}) {
+    setCostPrice('', shouldUpdate: shouldUpdate);
+    setSellingPrice('', shouldUpdate: shouldUpdate);
+    setDescription('', shouldUpdate: shouldUpdate);
+    setTitle('', shouldUpdate: shouldUpdate);
+    setImageUrl('', shouldUpdate: shouldUpdate);
+    setQuantity('', shouldUpdate: shouldUpdate);
   }
 
   void getProducts() async {
@@ -99,7 +110,16 @@ class ProductController extends GetxController {
   Future<bool> updateProduct(Products product) async {
     try {
       isLoading = true.obs;
-      await _productManager?.value.productDao.updateProduct(product);
+      await _productManager?.value.productDao.updateProduct(
+        product.id,
+        product.updatedAt,
+        product.title,
+        product.description,
+        product.imageUrl,
+        product.costPrice,
+        product.sellingPrice,
+        product.quantity,
+      );
       isLoading = false.obs;
       update();
       return true;
@@ -111,34 +131,43 @@ class ProductController extends GetxController {
     return false;
   }
 
-  void setTitle(String entry) {
+  void setTitle(String entry, {bool shouldUpdate = true}) {
     title = entry.obs;
+    if (shouldUpdate) update();
   }
 
-  void setDescription(String entry) {
+  void setDescription(String entry, {bool shouldUpdate = true}) {
     description = entry.obs;
+    if (shouldUpdate) update();
   }
 
-  void setCostPrice(String entry) {
+  void setCostPrice(String entry, {bool shouldUpdate = true}) {
     costPrice = (double.tryParse(entry) ?? 0.0).obs;
+    if (shouldUpdate) update();
   }
 
-  void setSellingPrice(String entry) {
+  void setSellingPrice(String entry, {bool shouldUpdate = true}) {
     sellingPrice = (double.tryParse(entry) ?? 0.0).obs;
+    if (shouldUpdate) update();
   }
 
-  void setQuantity(String entry) {
+  void setQuantity(String entry, {bool shouldUpdate = true}) {
     qaunttity = (int.tryParse(entry) ?? 0).obs;
+    if (shouldUpdate) update();
   }
 
-  void setTempImage(Uint8List entry) {
+  void setTempImage(Uint8List entry, {bool shouldUpdate = true}) {
     tempImage = entry.obs;
+    if (shouldUpdate) update();
   }
 
-  void resetTempImage() => tempImage = null;
+  void resetTempImage({bool shouldUpdate = true}) {
+    tempImage = null;
+    if (shouldUpdate) update();
+  }
 
-  void setImageUrl(String entry) {
+  void setImageUrl(String entry, {bool shouldUpdate = true}) {
     imageUrl = entry.obs;
-    // update();
+    if (shouldUpdate) update();
   }
 }

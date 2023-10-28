@@ -43,179 +43,185 @@ class AppFormTemplate extends StatelessWidget {
       height: 200,
       width: 200,
       child: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AppText.markazi(
-                    text: formType == FormType.add
-                        ? 'Add product'
-                        : 'Update Product',
-                    fontSize: 28,
-                  ),
-                  const CloseButton()
-                ],
-              ),
-              Gap(24.h),
-              TextFormField(
-                initialValue: formType == FormType.add ? null : products.title,
-                decoration: const InputDecoration(hintText: 'Title'),
-                onChanged: ctrl.setTitle,
-                validator: (value) {
-                  if (ctrl.title.value.isEmpty) {
-                    return 'Product title cannot be empty';
-                  }
-                  if (ctrl.title.value.length > 30) {
-                    return 'Product title cannot be be greater than 30 characters';
-                  }
-                  return null;
-                },
-              ),
-              Gap(8.h),
-              TextFormField(
-                onChanged: ctrl.setDescription,
-                initialValue:
-                    formType == FormType.add ? null : products.description,
-                decoration: const InputDecoration(hintText: 'Description'),
-                validator: (value) {
-                  if (ctrl.description.value.isEmpty) {
-                    return 'Product description cannot be empty';
-                  }
-                  if (ctrl.description.value.length > 100) {
-                    return 'Product description cannot be be greater than 100 characters';
-                  }
-                  return null;
-                },
-              ),
-              Gap(8.h),
-              TextFormField(
-                onChanged: ctrl.setCostPrice,
-                initialValue: formType == FormType.add
-                    ? null
-                    : products.costPrice.toInt().toString(),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  hintText: 'Cost price',
-                ),
-                validator: (value) {
-                  if (ctrl.costPrice.value < 1) {
-                    return 'Cost price cannot be less than 1';
-                  }
-                  if (ctrl.costPrice.value > ctrl.sellingPrice.value) {
-                    return 'Cost price cannot be greater than selling price';
-                  }
-                  return null;
-                },
-              ),
-              Gap(8.h),
-              TextFormField(
-                onChanged: ctrl.setSellingPrice,
-                initialValue: formType == FormType.add
-                    ? null
-                    : products.sellingPrice.toInt().toString(),
-                decoration: const InputDecoration(hintText: 'Selling price'),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (ctrl.sellingPrice.value < 1) {
-                    return 'Sellling price cannot be less than 1';
-                  }
-                  if (ctrl.costPrice.value > ctrl.sellingPrice.value) {
-                    return 'Selling price cannot be less than cost price';
-                  }
-                  return null;
-                },
-              ),
-              Gap(8.h),
-              TextFormField(
-                onChanged: ctrl.setQuantity,
-                initialValue: formType == FormType.add
-                    ? null
-                    : products.quantity.toString(),
-                decoration: const InputDecoration(hintText: 'Quantity'),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(6),
-                  FilteringTextInputFormatter.deny(RegExp(r"^0"))
-                ],
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (ctrl.qaunttity.value < 0) {
-                    return 'Quantity cannot be less than 1';
-                  }
-                  if (ctrl.qaunttity.value > 1000) {
-                    return 'Quantity cannot be more than 1000';
-                  }
-                  return null;
-                },
-              ),
-              Gap(8.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  formType == FormType.add
-                      ? ctrl.tempImage?.value == null
-                          ? const SizedBox.shrink()
-                          : Image.memory(
-                              ctrl.tempImage!.value,
-                              height: 70,
-                              width: 70,
-                            )
-                      : (products.imageUrl.isNotEmpty &&
-                              ctrl.tempImage?.value == null
-                          ? Image.file(
-                              File(products.imageUrl),
-                              height: 70,
-                              width: 70,
-                            )
-                          : ctrl.tempImage?.value != null
-                              ? Image.memory(
-                                  ctrl.tempImage!.value,
-                                  height: 70,
-                                  width: 70,
-                                )
-                              : const SizedBox.shrink()),
-                  GestureDetector(
-                    onTap: () async {
-                      final result = await showImagePickerBottomsheet(context);
-                      if (result == null) return;
-                      ctrl.setImageUrl(result);
-                      final resultFile = File(result);
-                      final inMemomry = await resultFile.readAsBytes();
-                      ctrl.setTempImage(inMemomry);
-                    },
-                    child: const AppText(
-                      text: 'Update Image',
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w600,
+        child: GetBuilder(builder: (cont) {
+          return Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppText.markazi(
+                      text: formType == FormType.add
+                          ? 'Add product'
+                          : 'Update Product',
+                      fontSize: 28,
                     ),
+                    const CloseButton()
+                  ],
+                ),
+                Gap(24.h),
+                TextFormField(
+                  initialValue:
+                      formType == FormType.add ? null : products.title,
+                  decoration: const InputDecoration(hintText: 'Title'),
+                  onChanged: ctrl.setTitle,
+                  validator: (value) {
+                    if (ctrl.title.value.isEmpty) {
+                      return 'Product title cannot be empty';
+                    }
+                    if (ctrl.title.value.length > 30) {
+                      return 'Product title cannot be be greater than 30 characters';
+                    }
+                    return null;
+                  },
+                ),
+                Gap(8.h),
+                TextFormField(
+                  onChanged: ctrl.setDescription,
+                  initialValue:
+                      formType == FormType.add ? null : products.description,
+                  decoration: const InputDecoration(hintText: 'Description'),
+                  validator: (value) {
+                    if (ctrl.description.value.isEmpty) {
+                      return 'Product description cannot be empty';
+                    }
+                    if (ctrl.description.value.length > 100) {
+                      return 'Product description cannot be be greater than 100 characters';
+                    }
+                    return null;
+                  },
+                ),
+                Gap(8.h),
+                TextFormField(
+                  onChanged: ctrl.setCostPrice,
+                  initialValue: formType == FormType.add
+                      ? null
+                      : products.costPrice.toInt().toString(),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: 'Cost price',
                   ),
-                ],
-              ),
-              Gap(16.h),
-              AppButton(
-                callback: () async {
-                  if (formKey.currentState?.validate() ?? false) {
+                  validator: (value) {
+                    if (ctrl.costPrice.value < 1) {
+                      return 'Cost price cannot be less than 1';
+                    }
+                    if (ctrl.costPrice.value > ctrl.sellingPrice.value) {
+                      return 'Cost price cannot be greater than selling price';
+                    }
+                    return null;
+                  },
+                ),
+                Gap(8.h),
+                TextFormField(
+                  onChanged: ctrl.setSellingPrice,
+                  initialValue: formType == FormType.add
+                      ? null
+                      : products.sellingPrice.toInt().toString(),
+                  decoration: const InputDecoration(hintText: 'Selling price'),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (ctrl.sellingPrice.value < 1) {
+                      return 'Sellling price cannot be less than 1';
+                    }
+                    if (ctrl.costPrice.value > ctrl.sellingPrice.value) {
+                      return 'Selling price cannot be less than cost price';
+                    }
+                    return null;
+                  },
+                ),
+                Gap(8.h),
+                TextFormField(
+                  onChanged: ctrl.setQuantity,
+                  initialValue: formType == FormType.add
+                      ? null
+                      : products.quantity.toString(),
+                  decoration: const InputDecoration(hintText: 'Quantity'),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(6),
+                    FilteringTextInputFormatter.deny(RegExp(r"^0"))
+                  ],
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (ctrl.qaunttity.value < 0) {
+                      return 'Quantity cannot be less than 1';
+                    }
+                    if (ctrl.qaunttity.value > 1000) {
+                      return 'Quantity cannot be more than 1000';
+                    }
+                    return null;
+                  },
+                ),
+                Gap(8.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     formType == FormType.add
-                        ? await addProduct(ctrl)
-                        : await updateProductMethod();
-                  } else {
-                    return;
-                  }
-                },
-              )
-            ],
-          ),
-        ),
+                        ? ctrl.tempImage?.value == null
+                            ? const SizedBox.shrink()
+                            : Image.memory(
+                                ctrl.tempImage!.value,
+                                height: 70,
+                                width: 70,
+                              )
+                        : (products.imageUrl.isNotEmpty &&
+                                ctrl.tempImage?.value == null
+                            ? Image.file(
+                                File(products.imageUrl),
+                                height: 70,
+                                width: 70,
+                              )
+                            : ctrl.tempImage?.value != null
+                                ? Image.memory(
+                                    ctrl.tempImage!.value,
+                                    height: 70,
+                                    width: 70,
+                                  )
+                                : const SizedBox.shrink()),
+                    GestureDetector(
+                      onTap: () async {
+                        final result =
+                            await showImagePickerBottomsheet(context);
+                        if (result == null) return;
+                        ctrl.setImageUrl(result);
+                        final resultFile = File(result);
+                        final inMemomry = await resultFile.readAsBytes();
+                        ctrl.setTempImage(inMemomry);
+                      },
+                      child: AppText(
+                        text: formType == FormType.add
+                            ? 'Add Image'
+                            : 'Update Image',
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                Gap(16.h),
+                AppButton(
+                  callback: () async {
+                    if (formKey.currentState?.validate() ?? false) {
+                      formType == FormType.add
+                          ? await addProduct(ctrl)
+                          : await updateProductMethod();
+                    } else {
+                      return;
+                    }
+                  },
+                )
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
@@ -237,6 +243,7 @@ class AppFormTemplate extends StatelessWidget {
       Get.back();
       appSnackBar(message: 'Product updated successfully!');
       ctrl.resetTempImage();
+      ctrl.resetFields();
     } else {
       Get.back();
       appSnackBar(
@@ -261,6 +268,7 @@ class AppFormTemplate extends StatelessWidget {
       Get.back();
       appSnackBar(message: 'Product added successfully!');
       ctrl.resetTempImage();
+      ctrl.resetFields();
     } else {
       Get.back();
       appSnackBar(

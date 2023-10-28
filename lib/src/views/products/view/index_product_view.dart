@@ -30,10 +30,13 @@ class IndexProductView extends StatelessWidget {
           ),
         ),
         floatingActionButton: GestureDetector(
-          onTap: () => showDialog(
-            context: context,
-            builder: (context) => const AddProductView(),
-          ),
+          onTap: () {
+            ctrl.resetFields();
+            showDialog(
+              context: context,
+              builder: (context) => const AddProductView(),
+            );
+          },
           child: Container(
             height: 50.h,
             width: 50.h,

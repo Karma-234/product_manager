@@ -17,6 +17,16 @@ abstract class ProductDao {
   @delete
   Future<void> deleteProduct(Products person);
 
-  @Update(onConflict: OnConflictStrategy.replace)
-  Future<void> updateProduct(Products person);
+  @Query(
+      'UPDATE Products SET updatedAt = :updatedAt, title = :title, description = :description, imageUrl = :imageUrl, costPrice = :costPrice, sellingPrice = :sellingPrice, quantity = :quantity WHERE id = :id')
+  Future<void> updateProduct(
+    String id,
+    String updatedAt,
+    String title,
+    String description,
+    String imageUrl,
+    double costPrice,
+    double sellingPrice,
+    int quantity,
+  );
 }

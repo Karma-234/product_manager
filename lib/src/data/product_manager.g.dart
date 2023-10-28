@@ -138,22 +138,6 @@ class _$ProductDao extends ProductDao {
                   'imageUrl': item.imageUrl
                 },
             changeListener),
-        _productsUpdateAdapter = UpdateAdapter(
-            database,
-            'Products',
-            ['id'],
-            (Products item) => <String, Object?>{
-                  'id': item.id,
-                  'title': item.title,
-                  'description': item.description,
-                  'costPrice': item.costPrice,
-                  'sellingPrice': item.sellingPrice,
-                  'quantity': item.quantity,
-                  'createdAt': item.createdAt,
-                  'updatedAt': item.updatedAt,
-                  'imageUrl': item.imageUrl
-                },
-            changeListener),
         _productsDeletionAdapter = DeletionAdapter(
             database,
             'Products',
@@ -180,8 +164,6 @@ class _$ProductDao extends ProductDao {
   final QueryAdapter _queryAdapter;
 
   final InsertionAdapter<Products> _productsInsertionAdapter;
-
-  final UpdateAdapter<Products> _productsUpdateAdapter;
 
   final DeletionAdapter<Products> _productsDeletionAdapter;
 
@@ -221,13 +203,33 @@ class _$ProductDao extends ProductDao {
   }
 
   @override
-  Future<void> insertProduct(Products person) async {
-    await _productsInsertionAdapter.insert(person, OnConflictStrategy.abort);
+  Future<void> updateProduct(
+    String id,
+    String updatedAt,
+    String title,
+    String description,
+    String imageUrl,
+    double costPrice,
+    double sellingPrice,
+    int quantity,
+  ) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE Products SET updatedAt = ?2, title = ?3, description = ?4, imageUrl = ?5, costPrice = ?6, sellingPrice = ?7, quantity = ?8 WHERE id = ?1',
+        arguments: [
+          id,
+          updatedAt,
+          title,
+          description,
+          imageUrl,
+          costPrice,
+          sellingPrice,
+          quantity
+        ]);
   }
 
   @override
-  Future<void> updateProduct(Products person) async {
-    await _productsUpdateAdapter.update(person, OnConflictStrategy.replace);
+  Future<void> insertProduct(Products person) async {
+    await _productsInsertionAdapter.insert(person, OnConflictStrategy.abort);
   }
 
   @override

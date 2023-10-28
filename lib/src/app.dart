@@ -3,8 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:product_manager/src/data/product_manager.dart';
-import 'package:product_manager/src/view_model/product_controller.dart';
 import 'package:product_manager/src/views/products/view/index_product_view.dart';
 
 /// The Widget that configures your application.
@@ -21,23 +19,10 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    ProductManager prdDao;
-    // final testDao = $FlatProductManager
-    //     .databaseBuilder("product_manager.db")
-    //     .build()
-    //     .then((value) {
-    //   prdDao = value;
-    //   prdDao.productDao.findAllProducts().forEach((item) {
-    //     item.forEach((element) {
-    //       debugPrint(element.imageUrl);
-    //     });
-    //   });
-    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    final productController = Get.put(ProductController());
     // productController.initDatabase();
     return ScreenUtilInit(
         designSize: const Size(390, 844),
