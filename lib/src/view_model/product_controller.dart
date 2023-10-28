@@ -42,7 +42,8 @@ class ProductController extends GetxController {
   }
 
   void setProduct(Products product) {
-    setCostPrice(product.costPrice.toString());
+    setCostPrice(product.costPrice.toInt().toString());
+    setSellingPrice(product.sellingPrice.toInt().toString());
     setDescription(product.description);
     setTitle(product.title);
     setImageUrl(product.imageUrl);

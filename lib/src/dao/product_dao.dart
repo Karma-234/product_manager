@@ -17,6 +17,6 @@ abstract class ProductDao {
   @delete
   Future<void> deleteProduct(Products person);
 
-  @update
+  @Update(onConflict: OnConflictStrategy.replace)
   Future<void> updateProduct(Products person);
 }

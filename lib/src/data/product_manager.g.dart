@@ -227,7 +227,7 @@ class _$ProductDao extends ProductDao {
 
   @override
   Future<void> updateProduct(Products person) async {
-    await _productsUpdateAdapter.update(person, OnConflictStrategy.abort);
+    await _productsUpdateAdapter.update(person, OnConflictStrategy.replace);
   }
 
   @override

@@ -7,6 +7,8 @@ import 'package:product_manager/src/service/image_picker_service/image_picker_se
 import 'package:product_manager/src/widgets/app_snackbar.dart';
 import 'package:product_manager/src/widgets/app_text.dart';
 
+import '../misc/enums.dart';
+
 Future<String?> showImagePickerBottomsheet(BuildContext context) {
   return showModalBottomSheet<String?>(
     backgroundColor: Colors.white,

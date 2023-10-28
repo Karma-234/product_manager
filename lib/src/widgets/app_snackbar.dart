@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../misc/enums.dart';
+
 appSnackBar(
     {String title = '',
     String message = '',
@@ -23,5 +25,3 @@ appSnackBar(
                 : Colors.red),
   );
 }
-
-enum AlertType { success, error, warning }

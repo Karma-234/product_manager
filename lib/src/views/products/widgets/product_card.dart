@@ -5,10 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:product_manager/src/entity/product.dart';
+import 'package:product_manager/src/misc/extensions.dart';
 import 'package:product_manager/src/view_model/product_controller.dart';
 import 'package:product_manager/src/views/products/view/update_product_view.dart';
 import 'package:product_manager/src/widgets/app_snackbar.dart';
 
+import '../../../misc/enums.dart';
 import '../../../widgets/app_text.dart';
 import 'dlete_product_prompt.dart';
 
@@ -60,11 +62,11 @@ class ProductCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     AppText.markazi(
-                      text: _products.title,
+                      text: _products.title.sentenceCase(),
                       fontWeight: FontWeight.w600,
                     ),
                     AppText(
-                      text: _products.description,
+                      text: _products.description.sentenceCase(),
                       fontSize: 14,
                       color: Colors.black54,
                       fontWeight: FontWeight.w600,
