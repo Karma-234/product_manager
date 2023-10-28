@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:get/route_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:product_manager/src/service/image_picker_service/image_picker_service_impl.dart';
+import 'package:product_manager/src/widgets/app_snackbar.dart';
 import 'package:product_manager/src/widgets/app_text.dart';
 
 Future<String?> showImagePickerBottomsheet(BuildContext context) {
@@ -62,11 +63,9 @@ class AppImagePickerBottomsheet extends StatelessWidget {
                 Get.back(result: imageData.path);
               });
             } catch (e) {
-              Get.showSnackbar(
-                const GetSnackBar(
-                    title: 'Error! Open settings to grant permission!',
-                    backgroundColor: Colors.red),
-              );
+              appSnackBar(
+                  alertType: AlertType.error,
+                  message: 'Open settings to grant permission!');
             }
           },
           icon: Icons.camera_alt_outlined,
@@ -80,11 +79,9 @@ class AppImagePickerBottomsheet extends StatelessWidget {
                 Get.back(result: imageData.path);
               });
             } catch (e) {
-              Get.showSnackbar(
-                const GetSnackBar(
-                    title: 'Error! Open settings to grant permission!',
-                    backgroundColor: Colors.red),
-              );
+              appSnackBar(
+                  alertType: AlertType.error,
+                  message: 'Open settings to grant permission!');
             }
           },
           icon: Icons.photo_library_rounded,

@@ -12,6 +12,7 @@ import 'package:product_manager/src/widgets/app_button.dart';
 import 'package:product_manager/src/widgets/app_image_picker_bottosheet.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../widgets/app_snackbar.dart';
 import '../../../widgets/app_text.dart';
 
 class AddProductView extends StatefulWidget {
@@ -79,7 +80,7 @@ class _AddProductViewState extends State<AddProductView> {
                     if (ctrl.description.value.isEmpty) {
                       return 'Product description cannot be empty';
                     }
-                    if (ctrl.title.value.length > 100) {
+                    if (ctrl.description.value.length > 100) {
                       return 'Product description cannot be be greater than 100 characters';
                     }
                     return null;
@@ -96,7 +97,7 @@ class _AddProductViewState extends State<AddProductView> {
                     hintText: 'Cost price',
                   ),
                   validator: (value) {
-                    if (ctrl.costPrice.value < 0) {
+                    if (ctrl.costPrice.value < 1) {
                       return 'Cost price cannot be less than 1';
                     }
                     if (ctrl.costPrice.value > ctrl.sellingPrice.value) {
@@ -114,11 +115,11 @@ class _AddProductViewState extends State<AddProductView> {
                   ],
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (ctrl.sellingPrice.value < 0) {
+                    if (ctrl.sellingPrice.value < 1) {
                       return 'Sellling price cannot be less than 1';
                     }
                     if (ctrl.costPrice.value > ctrl.sellingPrice.value) {
-                      return 'Selling price cannot be greater than cost price';
+                      return 'Selling price cannot be less than cost price';
                     }
                     return null;
                   },
@@ -134,10 +135,10 @@ class _AddProductViewState extends State<AddProductView> {
                   ],
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (ctrl.qaunttity.value < 0) {
+                    if (ctrl.qaunttity.value < 1) {
                       return 'Quantity cannot be less than 1';
                     }
-                    if (ctrl.costPrice.value > 1000) {
+                    if (ctrl.qaunttity.value > 1000) {
                       return 'Quantity cannot be more than 1000';
                     }
                     return null;
@@ -182,7 +183,7 @@ class _AddProductViewState extends State<AddProductView> {
                 AppButton(
                   callback: () async {
                     if (formKey.currentState?.validate() ?? false) {
-                      await ctrl.insertProduct(Products(
+                      final resp = await ctrl.insertProduct(Products(
                           id: const Uuid().v4(),
                           title: ctrl.title.value,
                           description: ctrl.description.value,
@@ -192,8 +193,17 @@ class _AddProductViewState extends State<AddProductView> {
                           updatedAt: DateTime.now().toIso8601String(),
                           imageUrl: ctrl.imageUrl.value,
                           quantity: ctrl.qaunttity.value));
-                      debugPrint(ctrl.error.value);
-                      Get.back();
+                      if (resp) {
+                        Get.back();
+                        appSnackBar(message: 'Product added successfully!');
+                        ctrl.resetTempImage();
+                      } else {
+                        Get.back();
+                        appSnackBar(
+                            alertType: AlertType.error,
+                            message:
+                                'An error was encountered while adding the product. Please try again');
+                      }
                     } else {
                       return;
                     }

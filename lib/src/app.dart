@@ -22,17 +22,17 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     ProductManager prdDao;
-    final testDao = $FlatProductManager
-        .databaseBuilder("product_manager.db")
-        .build()
-        .then((value) {
-      prdDao = value;
-      prdDao.productDao.findAllProducts().forEach((item) {
-        item.forEach((element) {
-          debugPrint(element.imageUrl);
-        });
-      });
-    });
+    // final testDao = $FlatProductManager
+    //     .databaseBuilder("product_manager.db")
+    //     .build()
+    //     .then((value) {
+    //   prdDao = value;
+    //   prdDao.productDao.findAllProducts().forEach((item) {
+    //     item.forEach((element) {
+    //       debugPrint(element.imageUrl);
+    //     });
+    //   });
+    // });
   }
 
   @override

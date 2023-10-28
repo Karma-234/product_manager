@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:product_manager/src/entity/product.dart';
 import 'package:product_manager/src/view_model/product_controller.dart';
 import 'package:product_manager/src/views/products/view/update_product_view.dart';
+import 'package:product_manager/src/widgets/app_snackbar.dart';
 
 import '../../../widgets/app_text.dart';
 import 'dlete_product_prompt.dart';
@@ -11,7 +15,8 @@ import 'dlete_product_prompt.dart';
 class ProductCard extends StatelessWidget {
   final Products _products;
 
-  const ProductCard({super.key, 
+  const ProductCard({
+    super.key,
     required Products products,
   }) : _products = products;
 
@@ -28,8 +33,11 @@ class ProductCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(16.r),
-            child: Image.asset(
-              '',
+            child: Image.file(
+              File(_products.imageUrl),
+              height: 150.h,
+              width: 120.w,
+              fit: BoxFit.fill,
               errorBuilder: (context, error, stackTrace) => Container(
                   height: 150.h,
                   width: 120.w,
@@ -39,7 +47,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   child: const Icon(Icons.av_timer_sharp)),
               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) =>
-                  const CircularProgressIndicator.adaptive(),
+                  child,
             ),
           ),
           Gap(8.w),
@@ -81,9 +89,9 @@ class ProductCard extends StatelessWidget {
                           detailText: _products.sellingPrice.toString(),
                         ),
                         Gap(3.h),
-                        const CustomTextSpan(
+                        CustomTextSpan(
                           titleText: 'Quantity:',
-                          detailText: '700',
+                          detailText: _products.quantity.toString(),
                         ),
                       ],
                     ),
@@ -114,9 +122,23 @@ class ProductCard extends StatelessWidget {
                                       context: context,
                                       builder: (context) {
                                         return DeleteProductPrompt(
-                                          onDelete: () => ProductController
-                                              .controller
-                                              .deleteProduct(_products),
+                                          onDelete: () async {
+                                            final resp = await ProductController
+                                                .controller
+                                                .deleteProduct(_products);
+                                            if (resp) {
+                                              Get.back();
+                                              appSnackBar(
+                                                  message:
+                                                      'Product deleted successfully!');
+                                            } else {
+                                              Get.back();
+                                              appSnackBar(
+                                                  alertType: AlertType.error,
+                                                  message:
+                                                      'An error was encountered while deleting the product. Please try again');
+                                            }
+                                          },
                                         );
                                       },
                                     );

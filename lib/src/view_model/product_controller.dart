@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:product_manager/src/data/product_manager.dart';
@@ -7,7 +6,7 @@ import 'package:product_manager/src/entity/product.dart';
 class ProductController extends GetxController {
   static ProductController get controller => Get.find();
   final _database = $FlatProductManager.databaseBuilder('product_manager.db');
-  ProductManager? _productManager;
+  Rx<ProductManager>? _productManager;
   RxString error = ''.obs;
   RxString title = ''.obs;
   RxString description = ''.obs;
@@ -19,24 +18,28 @@ class ProductController extends GetxController {
   RxString imageUrl = ''.obs;
   RxBool isLoading = false.obs;
   Rx<Uint8List>? tempImage;
-  RxList<Products>? _products;
-  RxList<Products> get product => _products ?? <Products>[].obs;
+  RxList<Products> products = <Products>[].obs;
   Rx<Stream<List<Products>>>? get allProducts =>
-      _productManager?.productDao.findAllProducts().obs;
+      _productManager?.value.productDao.findAllProducts().obs;
 
   Future<void> initDatabase() async {
     try {
+      debugPrint("STARTED LOADING");
       isLoading = true.obs;
-      _productManager = await _database.build();
+      final resp = await _database.build();
+      debugPrint("iINIT DB");
+      _productManager = resp.obs;
+
       isLoading = false.obs;
     } catch (e) {
-      isLoading = false.obs;
+      isLoading.value = false;
+
       error = e.toString().obs;
+
       debugPrint(error.value);
     }
+    update();
   }
-
-  List products = [].obs;
 
   void setProduct(Products product) {
     setCostPrice(product.costPrice.toString());
@@ -46,47 +49,95 @@ class ProductController extends GetxController {
     setQuantity(product.quantity.toString());
   }
 
-  void setProducts() async {
+  void getProducts() async {
     try {
-      allProducts?.value.forEach((e) {
-        _products = [...e].obs;
+      _productManager?.value.productDao.findAllProducts().forEach((element) {
+        products = element.obs;
       });
     } catch (e) {
       isLoading = false.obs;
+
       error = e.toString().obs;
     }
+    update();
   }
 
-  Future<void> deleteProduct(Products product) async {
+  Future<bool> deleteProduct(Products product) async {
     try {
       isLoading = true.obs;
-      await _productManager?.productDao.deleteProduct(product);
+
+      await _productManager?.value.productDao.deleteProduct(product);
+
       isLoading = false.obs;
+      update();
+      return true;
+    } catch (e) {
+      isLoading = false.obs;
+
+      error = e.toString().obs;
+    }
+    update();
+    return false;
+  }
+
+  Future<bool> insertProduct(Products product) async {
+    try {
+      isLoading = true.obs;
+      await _productManager?.value.productDao.insertProduct(product);
+      isLoading = false.obs;
+      update();
+      return true;
     } catch (e) {
       isLoading = false.obs;
       error = e.toString().obs;
     }
+    update();
+    return false;
   }
 
-  Future<void> insertProduct(Products product) async {
+  Future<bool> updateProduct(Products product) async {
     try {
       isLoading = true.obs;
-      await _productManager?.productDao.insertProduct(product);
+      await _productManager?.value.productDao.updateProduct(product);
       isLoading = false.obs;
+      update();
+      return true;
     } catch (e) {
       isLoading = false.obs;
       error = e.toString().obs;
     }
+    update();
+    return false;
   }
 
-  void setTitle(String entry) => title = entry.obs;
-  void setDescription(String entry) => description = entry.obs;
-  void setCostPrice(String entry) =>
-      costPrice = (double.tryParse(entry) ?? 0.0).obs;
-  void setSellingPrice(String entry) =>
-      sellingPrice = (double.tryParse(entry) ?? 0.0).obs;
-  void setQuantity(String entry) => qaunttity = (int.tryParse(entry) ?? 0).obs;
+  void setTitle(String entry) {
+    title = entry.obs;
+  }
 
-  void setTempImage(Uint8List entry) => tempImage = entry.obs;
-  void setImageUrl(String entry) => imageUrl = entry.obs;
+  void setDescription(String entry) {
+    description = entry.obs;
+  }
+
+  void setCostPrice(String entry) {
+    costPrice = (double.tryParse(entry) ?? 0.0).obs;
+  }
+
+  void setSellingPrice(String entry) {
+    sellingPrice = (double.tryParse(entry) ?? 0.0).obs;
+  }
+
+  void setQuantity(String entry) {
+    qaunttity = (int.tryParse(entry) ?? 0).obs;
+  }
+
+  void setTempImage(Uint8List entry) {
+    tempImage = entry.obs;
+  }
+
+  void resetTempImage() => tempImage = null;
+
+  void setImageUrl(String entry) {
+    imageUrl = entry.obs;
+    // update();
+  }
 }
