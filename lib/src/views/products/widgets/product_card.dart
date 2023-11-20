@@ -158,7 +158,6 @@ class ProductCard extends StatelessWidget {
                                     );
                                     return;
                                   default:
-                                    debugPrint("Did nothing");
                                 }
                               },
                               child: AppText(

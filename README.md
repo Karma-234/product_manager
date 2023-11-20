@@ -12,7 +12,7 @@ The Model - View - ViewModel (MVVM) was used for separation of concerns and adop
 
 ## Dependency Injection
 
-The Getx package was used for dependency injection to provide a structured approach for providing values to dependent components.
+The Getx package was used for dependency injection to with a structured approach for providing values to dependent components.
 
 ## State management
 

@@ -24,10 +24,9 @@ class ProductController extends GetxController {
 
   Future<void> initDatabase() async {
     try {
-      debugPrint("STARTED LOADING");
       isLoading = true.obs;
       final resp = await _database.build();
-      debugPrint("iINIT DB");
+
       _productManager = resp.obs;
 
       isLoading = false.obs;
@@ -35,8 +34,6 @@ class ProductController extends GetxController {
       isLoading.value = false;
 
       error = e.toString().obs;
-
-      debugPrint(error.value);
     }
     update();
   }
