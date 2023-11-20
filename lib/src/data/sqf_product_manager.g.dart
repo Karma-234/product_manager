@@ -1,7 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: camel_case_types
-
 part of 'sqf_product_manager.dart';
 
 // **************************************************************************
@@ -39,7 +37,7 @@ class TableProduct extends SqfEntityTableBase {
       SqfEntityFieldBase('description', DbType.text),
       SqfEntityFieldBase('cost_price', DbType.real, defaultValue: 0),
       SqfEntityFieldBase('selling_price', DbType.real, defaultValue: 0),
-      SqfEntityFieldBase('quantity', DbType.real, defaultValue: 0),
+      SqfEntityFieldBase('quantity', DbType.integer, defaultValue: 0),
       SqfEntityFieldBase('imageUrl', DbType.text),
       SqfEntityFieldBase('created_at', DbType.datetime,
           minValue: DateTime.parse('1900-01-01')),
@@ -141,7 +139,7 @@ class Product extends TableBase {
       selling_price = double.tryParse(o['selling_price'].toString());
     }
     if (o['quantity'] != null) {
-      quantity = double.tryParse(o['quantity'].toString());
+      quantity = int.tryParse(o['quantity'].toString());
     }
     if (o['imageUrl'] != null) {
       imageUrl = o['imageUrl'].toString();
@@ -170,7 +168,7 @@ class Product extends TableBase {
   String? description;
   double? cost_price;
   double? selling_price;
-  double? quantity;
+  int? quantity;
   String? imageUrl;
   DateTime? created_at;
   DateTime? updated_at;
@@ -793,7 +791,7 @@ class ProductFilterBuilder extends ConjunctionBase {
 
   ProductField? _quantity;
   ProductField get quantity {
-    return _quantity = _setField(_quantity, 'quantity', DbType.real);
+    return _quantity = _setField(_quantity, 'quantity', DbType.integer);
   }
 
   ProductField? _imageUrl;
@@ -1073,8 +1071,8 @@ class ProductFields {
 
   static TableField? _fQuantity;
   static TableField get quantity {
-    return _fQuantity =
-        _fQuantity ?? SqlSyntax.setField(_fQuantity, 'quantity', DbType.real);
+    return _fQuantity = _fQuantity ??
+        SqlSyntax.setField(_fQuantity, 'quantity', DbType.integer);
   }
 
   static TableField? _fImageUrl;
