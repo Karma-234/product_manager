@@ -24,7 +24,7 @@ class _IndexProductViewState extends State<IndexProductView> {
   void initState() {
     super.initState();
     if (mounted) {
-      ctrl.initDatabase().then((value) => ctrl.getProducts());
+      ctrl.getProducts();
     }
   }
 
