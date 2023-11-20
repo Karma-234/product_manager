@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:product_manager/src/data/sqf_product_manager.dart';
 import 'package:product_manager/src/domain/payload/product_payload.dart';
+import 'package:uuid/uuid.dart' as uuid;
 
 class ProductController extends GetxController {
   static ProductController get controller => Get.find();
@@ -54,7 +55,7 @@ class ProductController extends GetxController {
     update();
   }
 
-  Future<bool> deleteProduct(int id) async {
+  Future<bool> deleteProduct(String id) async {
     try {
       isLoading = true.obs;
       await Product().select().id.equals(id).delete();
@@ -74,7 +75,7 @@ class ProductController extends GetxController {
     try {
       isLoading = true.obs;
       await Product.withFields(
-              null,
+              const uuid.Uuid().v4(),
               product.name,
               product.decription,
               product.costPrice,
@@ -96,7 +97,8 @@ class ProductController extends GetxController {
     return false;
   }
 
-  Future<bool> updateProduct(ProductPayload product, {required int id}) async {
+  Future<bool> updateProduct(ProductPayload product,
+      {required String id}) async {
     try {
       isLoading = true.obs;
       await Product(
@@ -108,7 +110,7 @@ class ProductController extends GetxController {
         updated_at: DateTime.now(),
         selling_price: product.sellingPrice,
         cost_price: product.costPrice,
-      ).save();
+      ).upsert();
       isLoading = false.obs;
       update();
       return true;

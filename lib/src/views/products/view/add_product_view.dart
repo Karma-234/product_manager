@@ -25,10 +25,10 @@ class AddProductView extends StatefulWidget {
 
 class _AddProductViewState extends State<AddProductView> {
   Uint8List? bytes;
+  final ctrl = ProductController.controller;
+  final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final ctrl = ProductController.controller;
-    final formKey = GlobalKey<FormState>();
     // ctrl.resetFields();
 
     return Material(
@@ -185,6 +185,7 @@ class _AddProductViewState extends State<AddProductView> {
                   callback: () async {
                     if (formKey.currentState?.validate() ?? false) {
                       await addProduct(ctrl);
+                      ctrl.getProducts();
                     } else {
                       return;
                     }

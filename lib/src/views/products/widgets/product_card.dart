@@ -129,7 +129,7 @@ class ProductCard extends StatelessWidget {
                                             final resp = await ProductController
                                                 .controller
                                                 .deleteProduct(
-                                                    _products.id ?? 0);
+                                                    _products.id ?? '');
                                             if (resp) {
                                               Get.back();
                                               appSnackBar(
@@ -142,6 +142,8 @@ class ProductCard extends StatelessWidget {
                                                   message:
                                                       'An error was encountered while deleting the product. Please try again');
                                             }
+                                            ProductController.controller
+                                                .getProducts();
                                           },
                                         );
                                       },

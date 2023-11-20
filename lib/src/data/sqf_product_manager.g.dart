@@ -27,7 +27,7 @@ class TableProduct extends SqfEntityTableBase {
     // declare properties of EntityTable
     tableName = 'products';
     primaryKeyName = 'id';
-    primaryKeyType = PrimaryKeyType.integer_unique;
+    primaryKeyType = PrimaryKeyType.text;
     useSoftDeleting = true;
     // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
 
@@ -125,7 +125,7 @@ class Product extends TableBase {
     if (setDefaultValues) {
       _setDefaultValues();
     }
-    id = int.tryParse(o['id'].toString());
+    id = o['id'].toString();
     if (o['name'] != null) {
       name = o['name'].toString();
     }
@@ -163,7 +163,7 @@ class Product extends TableBase {
     isSaved = true;
   }
   // FIELDS (Product)
-  int? id;
+  String? id;
   String? name;
   String? description;
   double? cost_price;
@@ -374,7 +374,7 @@ class Product extends TableBase {
   }
 
   /// returns Product by ID if exist, otherwise returns null
-  /// Primary Keys: int? id
+  /// Primary Keys: String? id
   /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
   /// ex: getById(preload:true) -> Loads all related objects
   /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
@@ -382,7 +382,7 @@ class Product extends TableBase {
   /// bool loadParents: if true, loads all parent objects until the object has no parent
 
   /// <returns>returns [Product] if exist, otherwise returns null
-  Future<Product?> getById(int? id,
+  Future<Product?> getById(String? id,
       {bool preload = false,
       List<String>? preloadFields,
       bool loadParents = false,
@@ -400,40 +400,26 @@ class Product extends TableBase {
     return obj;
   }
 
-  /// Saves the (Product) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
-  /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  /// <returns>Returns id
+  /// Saves the (Product) object. If the Primary Key (id) field is null, returns Error.
+  /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
+  /// Call the saveAs() method if you do not want to save it when there is another row with the same id
+  /// <returns>Returns BoolResult
   @override
-  Future<int?> save({bool ignoreBatch = true}) async {
-    if (id == null || id == 0 || !isSaved!) {
-      await _mnProduct.insert(this, ignoreBatch);
-      if (saveResult!.success) {
-        isSaved = true;
-      }
-    } else {
-      await _mnProduct.update(this);
+  Future<BoolResult> save({bool ignoreBatch = true}) async {
+    final result = BoolResult(success: false);
+    try {
+      await _mnProduct.rawInsert(
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO products (id, name, description, cost_price, selling_price, quantity, imageUrl, created_at, updated_at,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?)',
+          toArgsWithIds(),
+          ignoreBatch);
+      result.success = true;
+      isSaved = true;
+    } catch (e) {
+      result.errorMessage = e.toString();
     }
 
-    return id;
-  }
-
-  /// Saves the (Product) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
-  /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  /// <returns>Returns id
-  @override
-  Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
-    if (id == null || id == 0 || !isSaved!) {
-      await _mnProduct.insertOrThrow(this, ignoreBatch);
-      if (saveResult != null && saveResult!.success) {
-        isSaved = true;
-      }
-      isInsert = true;
-    } else {
-      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnProduct.updateOrThrow(this);
-    }
-
-    return id;
+    saveResult = result;
+    return result;
   }
 
   /// saveAll method saves the sent List<Product> as a bulk in one transaction
@@ -444,7 +430,7 @@ class Product extends TableBase {
     // If there is no open transaction, start one
     final isStartedBatch = await Product_manager().batchStart();
     for (final obj in products) {
-      await obj.save(ignoreBatch: false);
+      await obj.save();
     }
     if (!isStartedBatch) {
       result = await Product_manager().batchCommit(
@@ -456,7 +442,7 @@ class Product extends TableBase {
   }
 
   /// Updates if the record exists, otherwise adds a new row
-  /// <returns>Returns id
+  /// <returns>Returns 1
   @override
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
@@ -483,28 +469,13 @@ class Product extends TableBase {
         saveResult = BoolResult(
             success: false, errorMessage: 'Product id=$id did not update');
       }
-      return id;
+      return 1;
     } catch (e) {
       saveResult = BoolResult(
           success: false,
           errorMessage: 'Product Save failed. Error: ${e.toString()}');
       return null;
     }
-  }
-
-  /// inserts or replaces the sent List<<Product>> as a bulk in one transaction.
-  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  /// Returns a BoolCommitResult
-  @override
-  Future<BoolCommitResult> upsertAll(List<Product> products,
-      {bool? exclusive, bool? noResult, bool? continueOnError}) async {
-    final results = await _mnProduct.rawInsertAll(
-        'INSERT OR REPLACE INTO products (id, name, description, cost_price, selling_price, quantity, imageUrl, created_at, updated_at,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?)',
-        products,
-        exclusive: exclusive,
-        noResult: noResult,
-        continueOnError: continueOnError);
-    return results;
   }
 
   /// Deletes Product
@@ -981,20 +952,20 @@ class ProductFilterBuilder extends ConjunctionBase {
     return _retVal;
   }
 
-  /// This method returns Primary Key List<int>.
-  /// <returns>List<int>
+  /// This method returns Primary Key List<String>.
+  /// <returns>List<String>
   @override
-  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
+  Future<List<String>> toListPrimaryKey([bool buildParams = true]) async {
     if (buildParams) {
       buildParameters();
     }
-    final List<int> idData = <int>[];
+    final List<String> idData = <String>[];
     qparams.selectColumns = ['id'];
     final idFuture = await _mnProduct!.toList(qparams);
 
     final int count = idFuture.length;
     for (int i = 0; i < count; i++) {
-      idData.add(idFuture[i]['id'] as int);
+      idData.add(idFuture[i]['id'] as String);
     }
     return idData;
   }

@@ -1,6 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+import 'package:product_manager/src/entity/product.dart';
+import 'package:sqfentity/sqfentity.dart';
 import 'package:sqfentity_gen/sqfentity_gen.dart';
+import 'package:http/http.dart' as http;
 
 part 'sqf_product_manager.g.dart';
 
@@ -11,18 +15,3 @@ const myDbModel = SqfEntityModel(
   databaseTables: [tableProducts],
   password: null,
 );
-const tableProducts = SqfEntityTable(
-    tableName: 'products',
-    primaryKeyName: 'id',
-    primaryKeyType: PrimaryKeyType.integer_unique,
-    useSoftDeleting: true,
-    fields: [
-      SqfEntityField('name', DbType.text),
-      SqfEntityField('description', DbType.text),
-      SqfEntityField('cost_price', DbType.real, defaultValue: 0),
-      SqfEntityField('selling_price', DbType.real, defaultValue: 0),
-      SqfEntityField('quantity', DbType.integer, defaultValue: 0),
-      SqfEntityField('imageUrl', DbType.text),
-      SqfEntityField('created_at', DbType.datetime),
-      SqfEntityField('updated_at', DbType.datetime),
-    ]);

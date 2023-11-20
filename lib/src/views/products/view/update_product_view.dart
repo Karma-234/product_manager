@@ -199,7 +199,7 @@ class UpdateProductView extends StatelessWidget {
                                     ? products.imageUrl
                                     : ctrl.imageUrl.value,
                                 quantity: ctrl.qaunttity.value),
-                            id: products.id ?? 0);
+                            id: products.id ?? '');
                         if (resp) {
                           Get.back();
                           appSnackBar(message: 'Product updated successfully!');
@@ -211,6 +211,7 @@ class UpdateProductView extends StatelessWidget {
                               message:
                                   'An error was encountered while updating the product. Please try again');
                         }
+                        ctrl.getProducts();
                       } else {
                         return;
                       }
