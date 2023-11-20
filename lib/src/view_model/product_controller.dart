@@ -74,7 +74,7 @@ class ProductController extends GetxController {
   Future<bool> insertProduct(ProductPayload product) async {
     try {
       isLoading = true.obs;
-      await Product.withFields(
+      final resp = await Product.withFields(
               const uuid.Uuid().v4(),
               product.name,
               product.decription,
@@ -87,8 +87,9 @@ class ProductController extends GetxController {
               null)
           .save();
       isLoading = false.obs;
+      error = resp.errorMessage?.obs ?? ''.obs;
       update();
-      return true;
+      return resp.success;
     } catch (e) {
       isLoading = false.obs;
       error = e.toString().obs;
