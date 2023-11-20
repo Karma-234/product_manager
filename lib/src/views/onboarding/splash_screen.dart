@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -37,9 +35,18 @@ class _SplashScreenState extends State<SplashScreen>
       setState(() {
         _opacity = 1;
       });
+      _animationController.forward();
     }
-    _animationController.forward();
-    _timer = Timer(const Duration(seconds: 2), () {});
+
+    _timer = Timer(const Duration(seconds: 2), () {
+      Navigator.of(context).popAndPushNamed("home");
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
