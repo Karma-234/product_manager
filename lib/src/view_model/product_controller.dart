@@ -1,12 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:product_manager/src/data/product_manager.dart';
-import 'package:product_manager/src/entity/product.dart';
+import 'package:product_manager/src/data/sqf_product_manager.dart';
+import 'package:product_manager/src/domain/payload/product_payload.dart';
 
 class ProductController extends GetxController {
   static ProductController get controller => Get.find();
-  final _database = $FlatProductManager.databaseBuilder('product_manager.db');
-  Rx<ProductManager>? _productManager;
+
   RxString error = ''.obs;
   RxString title = ''.obs;
   RxString description = ''.obs;
@@ -18,34 +17,17 @@ class ProductController extends GetxController {
   RxString imageUrl = ''.obs;
   RxBool isLoading = false.obs;
   Rx<Uint8List>? tempImage;
-  RxList<Products> products = <Products>[].obs;
-  Rx<Stream<List<Products>>>? get allProducts =>
-      _productManager?.value.productDao.findAllProducts().obs;
+  RxList<Product> products = <Product>[].obs;
 
-  Future<void> initDatabase() async {
-    try {
-      isLoading = true.obs;
-      final resp = await _database.build();
-
-      _productManager = resp.obs;
-
-      isLoading = false.obs;
-    } catch (e) {
-      isLoading.value = false;
-
-      error = e.toString().obs;
-    }
-    update();
-  }
-
-  void setProduct(Products product, {bool shouldUpdate = true}) {
-    setCostPrice(product.costPrice.toInt().toString(),
+  void setProduct(Product product, {bool shouldUpdate = true}) {
+    setCostPrice(product.cost_price?.toInt().toString() ?? 'Not specified',
         shouldUpdate: shouldUpdate);
-    setSellingPrice(product.sellingPrice.toInt().toString(),
+    setSellingPrice(
+        product.selling_price?.toInt().toString() ?? 'Not sepcified',
         shouldUpdate: shouldUpdate);
-    setDescription(product.description, shouldUpdate: shouldUpdate);
-    setTitle(product.title, shouldUpdate: shouldUpdate);
-    setImageUrl(product.imageUrl, shouldUpdate: shouldUpdate);
+    setDescription(product.description.toString(), shouldUpdate: shouldUpdate);
+    setTitle(product.name.toString(), shouldUpdate: shouldUpdate);
+    setImageUrl(product.imageUrl.toString(), shouldUpdate: shouldUpdate);
     setQuantity(product.quantity.toString(), shouldUpdate: shouldUpdate);
   }
 
@@ -60,9 +42,10 @@ class ProductController extends GetxController {
 
   void getProducts() async {
     try {
-      _productManager?.value.productDao.findAllProducts().forEach((element) {
-        products = element.obs;
-      });
+      isLoading = true.obs;
+      final resp = await Product().select().toList();
+      products = resp.obs;
+      isLoading = false.obs;
     } catch (e) {
       isLoading = false.obs;
 
@@ -71,12 +54,10 @@ class ProductController extends GetxController {
     update();
   }
 
-  Future<bool> deleteProduct(Products product) async {
+  Future<bool> deleteProduct(int id) async {
     try {
       isLoading = true.obs;
-
-      await _productManager?.value.productDao.deleteProduct(product);
-
+      await Product().select().id.equals(id).delete();
       isLoading = false.obs;
       update();
       return true;
@@ -89,10 +70,21 @@ class ProductController extends GetxController {
     return false;
   }
 
-  Future<bool> insertProduct(Products product) async {
+  Future<bool> insertProduct(ProductPayload product) async {
     try {
       isLoading = true.obs;
-      await _productManager?.value.productDao.insertProduct(product);
+      await Product.withFields(
+              null,
+              product.name,
+              product.decription,
+              product.costPrice,
+              product.sellingPrice,
+              product.quantity?.toDouble(),
+              product.imageUrl,
+              DateTime.now(),
+              DateTime.now(),
+              null)
+          .save();
       isLoading = false.obs;
       update();
       return true;
@@ -104,19 +96,19 @@ class ProductController extends GetxController {
     return false;
   }
 
-  Future<bool> updateProduct(Products product) async {
+  Future<bool> updateProduct(ProductPayload product, {required int id}) async {
     try {
       isLoading = true.obs;
-      await _productManager?.value.productDao.updateProduct(
-        product.id,
-        product.updatedAt,
-        product.title,
-        product.description,
-        product.imageUrl,
-        product.costPrice,
-        product.sellingPrice,
-        product.quantity,
-      );
+      await Product(
+        id: id,
+        name: product.name,
+        description: product.decription,
+        imageUrl: product.imageUrl,
+        quantity: product.quantity?.toDouble(),
+        updated_at: DateTime.now(),
+        selling_price: product.sellingPrice,
+        cost_price: product.costPrice,
+      ).save();
       isLoading = false.obs;
       update();
       return true;
