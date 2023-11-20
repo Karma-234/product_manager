@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:product_manager/src/views/onboarding/splash_screen.dart';
 import 'package:product_manager/src/views/products/view/index_product_view.dart';
 
 /// The Widget that configures your application.
@@ -50,11 +51,15 @@ class _MyAppState extends State<MyApp> {
               ),
               darkTheme: ThemeData.dark(),
               debugShowCheckedModeBanner: false,
+              routes: {
+                "/": (_) => const SplashScreen(),
+                "/home": (_) => const IndexProductView(),
+              },
               onGenerateRoute: (RouteSettings routeSettings) {
                 return MaterialPageRoute<void>(
                   settings: routeSettings,
                   builder: (BuildContext context) {
-                    return const IndexProductView();
+                    return const SplashScreen();
                   },
                 );
               },
