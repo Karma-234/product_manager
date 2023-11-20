@@ -4,22 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:product_manager/src/entity/product.dart';
+
 import 'package:product_manager/src/misc/extensions.dart';
 import 'package:product_manager/src/view_model/product_controller.dart';
 import 'package:product_manager/src/views/products/view/update_product_view.dart';
 import 'package:product_manager/src/widgets/app_snackbar.dart';
 
+import '../../../data/sqf_product_manager.dart';
 import '../../../misc/enums.dart';
 import '../../../widgets/app_text.dart';
 import 'dlete_product_prompt.dart';
 
 class ProductCard extends StatelessWidget {
-  final Products _products;
+  final Product _products;
 
   const ProductCard({
     super.key,
-    required Products products,
+    required Product products,
   }) : _products = products;
 
   @override
@@ -36,7 +37,7 @@ class ProductCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(16.r),
             child: Image.file(
-              File(_products.imageUrl),
+              File(_products.imageUrl ?? ''),
               height: 150.h,
               width: 120.w,
               fit: BoxFit.fill,
@@ -62,11 +63,11 @@ class ProductCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     AppText.markazi(
-                      text: _products.title.sentenceCase(),
+                      text: _products.name?.sentenceCase(),
                       fontWeight: FontWeight.w600,
                     ),
                     AppText(
-                      text: _products.description.sentenceCase(),
+                      text: _products.description?.sentenceCase(),
                       fontSize: 14,
                       color: Colors.black54,
                       fontWeight: FontWeight.w600,
@@ -83,12 +84,12 @@ class ProductCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CustomTextSpan(
-                          detailText: _products.costPrice.toString(),
+                          detailText: _products.cost_price.toString(),
                         ),
                         Gap(3.h),
                         CustomTextSpan(
                           titleText: 'Selling price:',
-                          detailText: _products.sellingPrice.toString(),
+                          detailText: _products.selling_price.toString(),
                         ),
                         Gap(3.h),
                         CustomTextSpan(
@@ -127,7 +128,8 @@ class ProductCard extends StatelessWidget {
                                           onDelete: () async {
                                             final resp = await ProductController
                                                 .controller
-                                                .deleteProduct(_products);
+                                                .deleteProduct(
+                                                    _products.id ?? '');
                                             if (resp) {
                                               Get.back();
                                               appSnackBar(
@@ -140,6 +142,8 @@ class ProductCard extends StatelessWidget {
                                                   message:
                                                       'An error was encountered while deleting the product. Please try again');
                                             }
+                                            ProductController.controller
+                                                .getProducts();
                                           },
                                         );
                                       },

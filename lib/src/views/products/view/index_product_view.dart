@@ -24,7 +24,7 @@ class _IndexProductViewState extends State<IndexProductView> {
   void initState() {
     super.initState();
     if (mounted) {
-      ctrl.initDatabase().then((value) => ctrl.getProducts());
+      ctrl.getProducts();
     }
   }
 
@@ -70,9 +70,13 @@ class _IndexProductViewState extends State<IndexProductView> {
                   : ListView.separated(
                       padding: EdgeInsets.symmetric(
                           horizontal: 16.w, vertical: 12.h),
-                      itemBuilder: (context, i) => Obx(() => ProductCard(
-                            products: productController.products[i],
-                          )),
+                      itemBuilder: (context, i) {
+                        // debugPrint(
+                        //     "PRODUCT ID FROM LOADING: ${productController.products[i].id.toString()}");
+                        return Obx(() => ProductCard(
+                              products: productController.products[i],
+                            ));
+                      },
                       separatorBuilder: (context, index) => Gap(16.h),
                       itemCount: productController.products.length);
         },

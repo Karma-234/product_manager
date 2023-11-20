@@ -5,12 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:product_manager/src/entity/product.dart';
+import 'package:product_manager/src/domain/payload/product_payload.dart';
+
 import 'package:product_manager/src/view_model/product_controller.dart';
 
 import 'package:product_manager/src/widgets/app_button.dart';
 import 'package:product_manager/src/widgets/app_image_picker_bottosheet.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../misc/enums.dart';
 import '../../../widgets/app_snackbar.dart';
@@ -25,10 +25,10 @@ class AddProductView extends StatefulWidget {
 
 class _AddProductViewState extends State<AddProductView> {
   Uint8List? bytes;
+  final ctrl = ProductController.controller;
+  final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final ctrl = ProductController.controller;
-    final formKey = GlobalKey<FormState>();
     // ctrl.resetFields();
 
     return Material(
@@ -185,6 +185,7 @@ class _AddProductViewState extends State<AddProductView> {
                   callback: () async {
                     if (formKey.currentState?.validate() ?? false) {
                       await addProduct(ctrl);
+                      ctrl.getProducts();
                     } else {
                       return;
                     }
@@ -199,14 +200,13 @@ class _AddProductViewState extends State<AddProductView> {
   }
 
   Future<void> addProduct(ProductController ctrl) async {
-    final resp = await ctrl.insertProduct(Products(
-        id: const Uuid().v4(),
-        title: ctrl.title.value,
-        description: ctrl.description.value,
+    final resp = await ctrl.insertProduct(ProductPayload(
+        name: ctrl.title.value,
+        decription: ctrl.description.value,
         costPrice: ctrl.costPrice.value,
         sellingPrice: ctrl.sellingPrice.value,
-        createdAt: DateTime.now().toIso8601String(),
-        updatedAt: DateTime.now().toIso8601String(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
         imageUrl: ctrl.imageUrl.value,
         quantity: ctrl.qaunttity.value));
     if (resp) {

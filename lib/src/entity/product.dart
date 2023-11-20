@@ -1,28 +1,17 @@
-import 'package:flat_orm/flat_orm.dart';
+import 'package:sqfentity_gen/sqfentity_gen.dart';
 
-@entity
-class Products {
-  @primaryKey
-  final String id;
-
-  final String title;
-  final String description;
-  final double costPrice;
-  final double sellingPrice;
-  final int quantity;
-  final String createdAt;
-  final String updatedAt;
-  final String imageUrl;
-
-  Products({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.costPrice,
-    required this.sellingPrice,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.imageUrl,
-    required this.quantity,
-  });
-}
+const tableProducts = SqfEntityTable(
+    tableName: 'products',
+    primaryKeyName: 'id',
+    primaryKeyType: PrimaryKeyType.text,
+    useSoftDeleting: true,
+    fields: [
+      SqfEntityField('name', DbType.text),
+      SqfEntityField('description', DbType.text),
+      SqfEntityField('cost_price', DbType.real, defaultValue: 0),
+      SqfEntityField('selling_price', DbType.real, defaultValue: 0),
+      SqfEntityField('quantity', DbType.integer, defaultValue: 0),
+      SqfEntityField('imageUrl', DbType.text),
+      SqfEntityField('created_at', DbType.datetime),
+      SqfEntityField('updated_at', DbType.datetime),
+    ]);

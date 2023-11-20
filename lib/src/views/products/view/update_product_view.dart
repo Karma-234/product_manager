@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:product_manager/src/entity/product.dart';
+import 'package:product_manager/src/data/sqf_product_manager.dart';
+import 'package:product_manager/src/domain/payload/product_payload.dart';
+
 import 'package:product_manager/src/view_model/product_controller.dart';
 import 'package:product_manager/src/widgets/app_button.dart';
 
@@ -15,7 +17,7 @@ import '../../../widgets/app_snackbar.dart';
 import '../../../widgets/app_text.dart';
 
 class UpdateProductView extends StatelessWidget {
-  final Products products;
+  final Product products;
   const UpdateProductView({super.key, required this.products});
   static final formKey = GlobalKey<FormState>();
 
@@ -56,7 +58,7 @@ class UpdateProductView extends StatelessWidget {
                   ),
                   Gap(24.h),
                   TextFormField(
-                    initialValue: products.title,
+                    initialValue: products.name,
                     onChanged: ctrl.setTitle,
                     decoration: const InputDecoration(hintText: 'Title'),
                     validator: (value) {
@@ -87,7 +89,7 @@ class UpdateProductView extends StatelessWidget {
                   Gap(8.h),
                   TextFormField(
                     onChanged: ctrl.setCostPrice,
-                    initialValue: products.costPrice.toInt().toString(),
+                    initialValue: products.cost_price?.toInt().toString(),
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
                     ],
@@ -108,7 +110,7 @@ class UpdateProductView extends StatelessWidget {
                   Gap(8.h),
                   TextFormField(
                     onChanged: ctrl.setSellingPrice,
-                    initialValue: products.sellingPrice.toInt().toString(),
+                    initialValue: products.selling_price?.toInt().toString(),
                     decoration:
                         const InputDecoration(hintText: 'Selling price'),
                     inputFormatters: [
@@ -150,10 +152,10 @@ class UpdateProductView extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      products.imageUrl.isNotEmpty &&
+                      (products.imageUrl ?? '').isNotEmpty &&
                               ctrl.tempImage?.value == null
                           ? Image.file(
-                              File(products.imageUrl),
+                              File(products.imageUrl ?? ''),
                               height: 70,
                               width: 70,
                             )
@@ -186,25 +188,22 @@ class UpdateProductView extends StatelessWidget {
                   AppButton(
                     callback: () async {
                       if (formKey.currentState?.validate() ?? false) {
-                        final resp = await ctrl.updateProduct(Products(
-                            id: products.id,
-                            title: ctrl.title.value,
-                            description: ctrl.description.value,
-                            costPrice: ctrl.costPrice.value,
-                            sellingPrice: ctrl.sellingPrice.value,
-                            createdAt: products.createdAt,
-                            updatedAt: DateTime.now().toIso8601String(),
-                            imageUrl: ctrl.imageUrl.value.isEmpty
-                                ? products.imageUrl
-                                : ctrl.imageUrl.value,
-                            quantity: ctrl.qaunttity.value));
+                        final resp = await ctrl.updateProduct(
+                            ProductPayload(
+                                name: ctrl.title.value,
+                                decription: ctrl.description.value,
+                                costPrice: ctrl.costPrice.value,
+                                sellingPrice: ctrl.sellingPrice.value,
+                                updatedAt: DateTime.now(),
+                                imageUrl: ctrl.imageUrl.value.isEmpty
+                                    ? products.imageUrl
+                                    : ctrl.imageUrl.value,
+                                quantity: ctrl.qaunttity.value),
+                            id: products.id ?? '');
                         if (resp) {
                           Get.back();
                           appSnackBar(message: 'Product updated successfully!');
                           ctrl.resetTempImage();
-                          ctrl
-                              .initDatabase()
-                              .then((value) => ctrl.getProducts());
                         } else {
                           Get.back();
                           appSnackBar(
@@ -212,6 +211,7 @@ class UpdateProductView extends StatelessWidget {
                               message:
                                   'An error was encountered while updating the product. Please try again');
                         }
+                        ctrl.getProducts();
                       } else {
                         return;
                       }
