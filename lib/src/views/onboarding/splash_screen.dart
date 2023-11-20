@@ -13,7 +13,7 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late Timer _timer;
   late Animation<double> _progress;
-  double _opacity = 0;
+  double _opacity = 0.3;
   late AnimationController _animationController;
 
   @override
@@ -56,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen>
       body: Center(
         child: AnimatedOpacity(
           opacity: _opacity,
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 5000),
           child: AnimatedIcon(
             icon: AnimatedIcons.home_menu,
             progress: _progress,
